@@ -1,30 +1,24 @@
-    .syntax unified
-    .cpu cortex-a9
-    .fpu neon-fp16
+.global main
 
-    .text
-    .global _start
-_start:
-    /* Cargar X */
-    ldr   r0, =X        @ r0 ← &X
-    ldr   r0, [r0]      @ r0 ← X
+main:
+    MOV r0, #4 //este es el X     
+    CMP r0, #0      
+    BNE calcular    
+    MOV r0, #1      //Si es 0
+    B fin
 
-    /* Inicializar resultado */
-    mov   r1, #1        @ r1 ← 1
+calcular:
+    MOV r1, r0      
+    MOV r2, r0      
+    SUB r1, #1      
+    CMP r1, #0      
+    BEQ fin
 
-loop:
-    cmp   r0, #1        @ si r0 ≤ 1, terminamos
-    ble   done
-    mul   r1, r1, r0    @ r1 ← r1 * r0
-    sub   r0, r0, #1    @ r0 ← r0 - 1
-    b     loop
+bucle:
+    MUL r2, r2, r1  // r2 = r2 * r1
+    SUBS r1, #1     // Decrementar contador y actualizar flags
+    BNE bucle       
 
-done:
-    /* Bucle infinito para inspección en CPUlator */
-    b     done
-
-    .data
-    .align 2
-X:  .word 5            @ valor inicial de X (cambia aquí)
-
-    .end
+fin:
+    MOV r0, r2      //R en r0
+    BX lr           
